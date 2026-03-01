@@ -53,7 +53,7 @@ function StatusBadge({ status, onChange }: { status: Status; onChange: (s: Statu
 
       {open && (
         <div
-          className="fixed z-[9999] rounded-xl overflow-hidden"
+          className="fixed z-[9999] rounded-xl "
           style={{
             top: pos.top,
             right: pos.right,
