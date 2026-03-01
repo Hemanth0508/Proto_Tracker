@@ -211,7 +211,7 @@ function PhaseCard({ phase, onStatusChange, onNoteChange }: {
       }}>
 
       {/* Phase Header */}
-      <button
+      <div
         onClick={() => setExpanded(e => !e)}
         className="w-full text-left p-5 flex items-center gap-4 hover:bg-white/[0.02] transition-colors"
       >
@@ -252,7 +252,7 @@ function PhaseCard({ phase, onStatusChange, onNoteChange }: {
           style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>
           ▾
         </div>
-      </button>
+      </div>
 
       {/* Progress bar full width */}
       <div className="h-px w-full" style={{ background: 'rgba(255,255,255,0.04)' }}>
