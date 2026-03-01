@@ -161,7 +161,6 @@ function TaskRow({ task, phaseColor, onStatusChange, onNoteChange }: {
           </button>
           <StatusBadge
             status={task.status}
-            color={phaseColor}
             onChange={(s) => onStatusChange(task.id, s)}
           />
         </div>
@@ -237,7 +236,7 @@ function PhaseCard({ phase, onStatusChange, onNoteChange }: {
             <span className="text-xs font-mono" style={{ color: hasStarted ? phase.color : '#475569' }}>
               {done}/{total}
             </span>
-            <StatusBadge status={phaseStatus} color={phase.color} onChange={() => {}} />
+            <StatusBadge status={phaseStatus}  onChange={() => {}} />
           </div>
           {/* Mini progress bar */}
           <div className="w-24 h-1 rounded-full bg-white/5 overflow-hidden">
