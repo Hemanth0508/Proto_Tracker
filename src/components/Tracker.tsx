@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Phase, SubTask, Status, PHASES as DEFAULT_PHASES } from '@/lib/data'
 
 // ─── Status config ─────────────────────────────────────────────
@@ -11,39 +11,80 @@ const STATUS_CONFIG = {
 }
 
 // ─── Tiny components ───────────────────────────────────────────
-function StatusBadge({ status, color, onChange }: { status: Status; color: string; onChange: (s: Status) => void }) {
+function StatusBadge({ status, onChange }: { status: Status; onChange: (s: Status) => void }) {
   const [open, setOpen] = useState(false)
+  const [pos, setPos] = useState({ top: 0, right: 0 })
+  const btnRef = useRef<HTMLButtonElement>(null)
   const cfg = STATUS_CONFIG[status]
+
+  const handleOpen = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!btnRef.current) return
+    const rect = btnRef.current.getBoundingClientRect()
+    const dropHeight = 116
+    const spaceBelow = window.innerHeight - rect.bottom
+    const top = spaceBelow < dropHeight + 8 ? rect.top - dropHeight - 4 : rect.bottom + 4
+    setPos({ top, right: window.innerWidth - rect.right })
+    setOpen(o => !o)
+  }
+
+  useEffect(() => {
+    if (!open) return
+    const close = () => setOpen(false)
+    window.addEventListener('click', close)
+    window.addEventListener('scroll', close, true)
+    return () => {
+      window.removeEventListener('click', close)
+      window.removeEventListener('scroll', close, true)
+    }
+  }, [open])
+
   return (
-    <div className="relative">
+    <>
       <button
-        onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-mono transition-all hover:opacity-90"
+        ref={btnRef}
+        onClick={handleOpen}
+        className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-mono transition-all hover:opacity-90 flex-shrink-0"
         style={{ background: cfg.bg, color: cfg.text, border: `1px solid ${cfg.text}30` }}
       >
         <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: cfg.dot }} />
         {cfg.label}
       </button>
+
       {open && (
-        <div className="absolute right-0 top-7 z-50 rounded-lg overflow-hidden shadow-2xl"
-          style={{ background: '#1a2535', border: '1px solid rgba(255,255,255,0.1)', minWidth: '130px' }}>
+        <div
+          className="fixed z-[9999] rounded-xl overflow-hidden"
+          style={{
+            top: pos.top,
+            right: pos.right,
+            background: '#1a2535',
+            border: '1px solid rgba(255,255,255,0.12)',
+            minWidth: '145px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.7)',
+          }}
+          onClick={e => e.stopPropagation()}
+        >
           {(Object.keys(STATUS_CONFIG) as Status[]).map(s => {
             const c = STATUS_CONFIG[s]
+            const isActive = s === status
             return (
-              <button key={s} onClick={() => { onChange(s); setOpen(false) }}
-                className="flex items-center gap-2 w-full px-3 py-2 text-xs hover:bg-white/5 transition-colors text-left"
-                style={{ color: c.text }}>
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: c.dot }} />
-                {c.label}
+              <button
+                key={s}
+                onClick={(e) => { e.stopPropagation(); onChange(s); setOpen(false) }}
+                className="flex items-center gap-2.5 w-full px-3 py-2.5 text-xs hover:bg-white/[0.06] transition-colors text-left"
+                style={{ color: c.text, background: isActive ? 'rgba(255,255,255,0.05)' : 'transparent' }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: c.dot }} />
+                <span className="flex-1">{c.label}</span>
+                {isActive && <span className="text-slate-600 text-xs">✓</span>}
               </button>
             )
           })}
         </div>
       )}
-    </div>
+    </>
   )
 }
-
 function NoteModal({ task, phaseColor, onSave, onClose }: {
   task: SubTask; phaseColor: string; onSave: (note: string) => void; onClose: () => void
 }) {

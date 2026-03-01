@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Agent Governance — SDLC Tracker
 
 Mission control dashboard for the Agent Governance project. Tracks all 12 SDLC phases with persistent storage, status tracking, and notes per task.
@@ -10,7 +9,7 @@ Mission control dashboard for the Agent Governance project. Tracks all 12 SDLC p
 git init
 git add .
 git commit -m "init: agent governance tracker"
-git remote add origin https://github.com/YOUR_USERNAME/agent-governance-tracker.git
+git remote add origin https://github.com/YOUR_USERNAME/Proto_Tracker.git
 git push -u origin main
 ```
 
@@ -64,5 +63,4 @@ Open [http://localhost:3000](http://localhost:3000)
 - Vercel KV (Redis-backed persistent storage)
 =======
 # Prototype_Tracker
->>>>>>> d8831e0b2eda17cc4ac51f7c6f611aa05ef8822c
 "# Prototype_Tracker" 
